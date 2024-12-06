@@ -38,15 +38,15 @@ def guard_loop(input, guard_pos):
     moved_without_update = 0
     while guard_pos[0]+dirs[dir][0] > 0 and guard_pos[1]+dirs[dir][1] > 0 and guard_pos[0]+dirs[dir][0] < len(input[0]) and guard_pos[1]+dirs[dir][1] < len(input):
         if input[guard_pos[1]+dirs[dir][1]][guard_pos[0]+dirs[dir][0]] != "#":
-                guard_pos = (guard_pos[0]+dirs[dir][0], guard_pos[1]+dirs[dir][1])
-                before = len(set(visited))
-                visited.append(guard_pos)
-                after = len(set(visited))
+            guard_pos = (guard_pos[0]+dirs[dir][0], guard_pos[1]+dirs[dir][1])
+            before = len(set(visited))
+            visited.append(guard_pos)
+            after = len(set(visited))
 
-                if before == after:
-                    moved_without_update += 1
-                    if moved_without_update == before:
-                        return 1
+            if before == after:
+                moved_without_update += 1
+                if moved_without_update == before:
+                    return 1
         else:
             match dir:
                 case "N":
