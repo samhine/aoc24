@@ -10,8 +10,6 @@ with open("input.txt", "r") as file:
         } for x in input
     ]
 
-print(input)
-
 map_op = {
     "0": "*",
     "1": "+",
@@ -31,33 +29,20 @@ def calculate(nums, ops):
         elif calc[i] == "*":
             tot *= int(calc[i+1])
         elif calc[i] == "||":
-            tot = int(tot)
             tot = int(str(tot) + str(calc[i+1]))
     return tot
-    
+
+part1 = "01"
+part2 = "012"
 
 results = []
 for calc in input:
     positions = len(calc["arg"])-1
-    permutations = ["".join(seq) for seq in itertools.product("01", repeat=positions)]
+    permutations = ["".join(seq) for seq in itertools.product(part2, repeat=positions)]
     for permutation in permutations:
         result = calculate(calc["arg"], permutation)
         if result == int(calc["op"]):
             results.append(result)
             break
 
-print(results)
-print(sum(results))
-
-results = []
-for calc in input:
-    positions = len(calc["arg"])-1
-    permutations = ["".join(seq) for seq in itertools.product("012", repeat=positions)]
-    for permutation in permutations:
-        result = calculate(calc["arg"], permutation)
-        if result == int(calc["op"]):
-            results.append(result)
-            break
-
-print(results)
 print(sum(results))
