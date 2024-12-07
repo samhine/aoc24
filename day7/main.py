@@ -1,4 +1,3 @@
-import copy
 import itertools
 
 with open("input.txt", "r") as file:
