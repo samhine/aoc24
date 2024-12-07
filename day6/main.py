@@ -43,6 +43,8 @@ def guard_loop(input, guard_pos):
             visited.append(guard_pos)
             after = len(set(visited))
 
+            print(visited)
+
             if before == after:
                 moved_without_update += 1
                 if moved_without_update == before:
@@ -66,11 +68,12 @@ print(len(list(set(visited))))
 
 count = 0
 for pos in visited:
+    print(pos)
     x, y = pos
     if input[y][x] == "^":
         continue
     check_input = copy.deepcopy(input)
     check_input[y][x] = "#"
-    count += guard_loop(check_input)
+    count += guard_loop(check_input, guard_pos)
 
 print(count)
