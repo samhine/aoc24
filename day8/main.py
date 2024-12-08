@@ -5,6 +5,7 @@ with open("input.txt", "r") as file:
 def distance(p1, p2):
     return p1[0]-p2[0], p1[1]-p2[1]
 
+# Create map of antennas
 map = dict()
 for x in range(len(input[0])):
     for y in range(len(input)):
@@ -13,13 +14,16 @@ for x in range(len(input[0])):
 
 print(map)
 
+# For each point on our map, find the distance to each antenna 
+# For this distance, check if there's another one at twice the distance away in the same direction
+# If there is, we're at an anti-node
 locations = []
 for x in range(len(input[0])):
     for y in range(len(input)):
-        for antenee, char in map.items():
-            dist = distance(antenee, (x, y))
+        for antenna, char in map.items():
+            dist = distance(antenna, (x, y))
             expected_ant = (x+2*dist[0], y+2*dist[1])
-            if expected_ant in map and map[expected_ant] == char and antenee != expected_ant:
+            if expected_ant in map and map[expected_ant] == char and antenna != expected_ant:
                 locations.append((x, y))
                 input[y][x] = "#"
 
@@ -28,13 +32,15 @@ for x in input:
 
 print(len(set(locations)))
 
+# Part 2
+# Exactly the same as part 1, but we count forward/backwards from each anti-node
 locations = []
 for x in range(len(input[0])):
     for y in range(len(input)):
-        for antenee, char in map.items():
-            dist = distance(antenee, (x, y))
+        for antenna, char in map.items():
+            dist = distance(antenna, (x, y))
             expected_ant = (x+2*dist[0], y+2*dist[1])
-            if expected_ant in map and map[expected_ant] == char and antenee != expected_ant:
+            if expected_ant in map and map[expected_ant] == char and antenna != expected_ant:
                 locations.append((x, y))
 
                 # When we find location we can append locations for every multiple of that distance going forwards
