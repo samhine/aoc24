@@ -1,41 +1,42 @@
-# After 3 iterations
-# 0 ->3 20,24
-# 1 ->3 2,0,2,4
-# x ->1 x*2024 ->2 
-
-from multiprocessing import Process
+from collections import defaultdict
 
 with open("input.txt", "r") as file:
     stones = file.read().split()
+    stones = [int(x) for x in stones]
 
 print(stones)
-blinks = 25
+blinks = 75
 
 def split(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-def process_stones(stones):
-    new_stones = []
-    for idx, stone in enumerate(stones):
-        if stone == "0":
-            new_stones += ['20', '24']
-        elif stone == "1":
-            new_stones += ['2', '0', '2', '4']
-        elif len(stone) % 4 == 0:
-            split_stone = [str(int(x)) for x in list(split(stone, 4))]
-            new_stones += split_stone
-        elif len(stone) % 2 == 0:
-            split_stone = [str(int(x)) for x in list(split(stone, 2))]
-            new_stones += split_stone
-        else:
-            x = str(int(stone)*2024)
-            new_stones+=process_stones([x])
-    return new_stones
+def process_stone(stone):
+    if stone == 0:
+        return [1]
+    elif len(str(stone)) % 2 == 0:
+        return [int(x) for x in list(split(str(stone), 2))]
+    else:
+        return [stone*2024]
+    
+def process_stones(stone_dict):
+    final_stone_dict = defaultdict(int)
+
+    for stone, count in stone_dict.items():
+        processed_stones = process_stone(stone)
+        for p_stone in processed_stones:
+            final_stone_dict[p_stone] += count
+    
+    return final_stone_dict
+
+stone_dict = defaultdict(int)
+for stone in stones:
+    stone_dict[stone] += 1
+
 
 for i in range(blinks):
-    
-    new_stones = process_stones(stones)
-    stones = new_stones
+    print(stone_dict)
+    new_stone_dict = process_stones(stone_dict)
+    stone_dict = new_stone_dict
 
-print(len(stones))
+print(sum([count for stone, count in stone_dict.items()]))
