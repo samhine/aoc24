@@ -1,0 +1,2 @@
+- could work through 1 by 1 (starting with a 0) and keep track of how many digits it turns into after X iterations
+- once we see a number we know about - add this number to our total, and remove it from consideration
