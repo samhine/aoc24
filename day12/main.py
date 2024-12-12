@@ -22,6 +22,7 @@ def count_consectutive_runs(arr):
     return runs
 
 def calc_sides(region):
+    # Find perimeter points in each direction
     perimeters = {
         "up": [],
         "down": [],
@@ -40,9 +41,9 @@ def calc_sides(region):
         "left": defaultdict(list),
         "right": defaultdict(list)
     }
-
     sides = 0
 
+    # Organise these points per "slice" of each direction
     for direction, perim in perimeters.items():
         for point in perim:
             if direction in ["up", "down"]:
@@ -50,6 +51,7 @@ def calc_sides(region):
             else:
                 slices[direction][point[0]].append(point[1])
     
+    # Count how many runs of consectutive numbers there are per slice of each direction
     for direction, slice in slices.items():
         for row, perim in slice.items():
             perim.sort()
