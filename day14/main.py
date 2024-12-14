@@ -16,7 +16,7 @@ def output_map(robot, seconds):
     for robot in robots:
         map[robot["p"][1]][robot["p"][0]] = "#"
     
-    with open("output.txt", "w+") as file:
+    with open("output.txt", "a") as file:
         file.write(f"Seconds: {seconds}\n")
         for row in map:
             file.write("".join(row) + "\n")
@@ -53,44 +53,25 @@ print(tot)
 robots = [parse_input(row) for row in input]
 seconds = 0
 
-possible = []
 found = False
-
-tree_shape = [
-    (0,0),
-    (-1,1),
-    (1,1),
-    (-2,2),
-    (2,2),
-    (-3,3),
-    (3,3),
-    (-4,4),
-    (4,4)
-]
 
 while not found:
     positions = set()
     for robot in robots:
         raw_pos = (robot["p"][0]+robot["v"][0]*seconds, robot["p"][1]+robot["v"][1]*seconds)
-        robot["p"] = (raw_pos[0] % width, raw_pos[1] % height)
-        positions.add(robot["p"])
+        positions.add((raw_pos[0] % width, raw_pos[1] % height))
     
+    # Check for row of 30 consecutive points
     for pos in positions:
-        # Check if the tree shape is present in the positions
-        if pos[0] < 4 or pos[1] > height-4:
-            continue
-        
         exists = True
-        for tree in tree_shape:
-            if (pos[0]+tree[0], pos[1]+tree[1]) not in positions:
+        for i in range(1, 30):
+            if (pos[0]+i, pos[1]) not in positions:
                 exists = False
                 break
         
         if exists:
-            print("Found at ", pos)
-            print("Seconds: ", seconds)
+            print(f"Found at {pos} after {seconds} seconds")
             output_map(robots, seconds)
-            found = True
             break
 
     seconds += 1
