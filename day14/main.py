@@ -1,6 +1,6 @@
 with open("input.txt", "r") as file:
-    height = 7
-    width = 11
+    height = 103
+    width = 101
     input = file.read().splitlines()
 
 def parse_input(row):
@@ -59,43 +59,43 @@ found = False
 while not found:
     positions = set()
     quadrants = {
-        "tl": 0,
-        "tr": 0,
-        "bl": 0,
-        "br": 0
+        "tl": set(),
+        "tr": set(),
+        "bl": set(),
+        "br": set()
     }
     for robot in robots:
         raw_pos = (robot["p"][0]+robot["v"][0]*second, robot["p"][1]+robot["v"][1]*second)
         robot["p"] = (raw_pos[0] % width, raw_pos[1] % height)
         positions.add(robot["p"])
+        x, y = robot["p"]
+        if x < width//2 and y < height//2:
+            quadrants["tl"].add((x, y))
+        elif x > width//2 and y < height//2:
+            quadrants["tr"].add((x, y))
+        elif x < width//2 and y > height//2:
+            quadrants["bl"].add((x, y))
+        elif x > width//2 and y > height//2:
+            quadrants["br"].add((x, y))
     
-    for x in range(width):
-        for y in range(height):
-            if (x, y) in positions:
-                if x < width//2 and y < height//2:
-                    quadrants["tl"] += 1
-                elif x > width//2 and y < height//2:
-                    quadrants["tr"] += 1
-                elif x < width//2 and y > height//2:
-                    quadrants["bl"] += 1
-                elif x > width//2 and y > height//2:
-                    quadrants["br"] += 1
-    
-    if quadrants["tl"] == quadrants["tr"] and quadrants["bl"] == quadrants["br"]:
+    if len(quadrants["tl"]) == len(quadrants["tr"]) and len(quadrants["bl"]) == len(quadrants["br"]):
         # Check if the right had side of the map is a mirror image of the left
-        # symmetrical = True
-        # for each in robots:
-        #     # If for each point (< width//2), there exists another point flipped across width//2 (on the same y) then we have a match
-        #     if each["p"][0] < width//2 and (width-each["p"][0], each["p"][1]) in positions:
-        #         continue
-        #     else:
-        #         symmetrical = False
-        #         break
-        # if symmetrical:
-        #     found = True
-        #     print(second)
-        #     output_map(robots, second)
-        output_map(robots, second)
+        symmetrical = True
+        for each in robots:
+            # If for each point (< width//2), there exists another point flipped across width//2 (on the same y) then we have a match
+            if each["p"][0] >= width//2:
+                continue
+            elif each["p"][0] < width//2 and (width-each["p"][0]-1, each["p"][1]) in positions:
+                continue
+            else:
+                symmetrical = False
+                break
+        if symmetrical:
+            found = True
+            print(second)
+            output_map(robots, second)
+    if second % 1000 == 0:
+        print(second)
     second += 1
 
 
