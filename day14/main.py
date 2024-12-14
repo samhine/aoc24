@@ -51,52 +51,49 @@ for v in quadrants.values():
 print(tot)
 
 robots = [parse_input(row) for row in input]
-second = 0
+seconds = 0
 
 possible = []
 found = False
 
+tree_shape = [
+    (0,0),
+    (-1,1),
+    (1,1),
+    (-2,2),
+    (2,2),
+    (-3,3),
+    (3,3),
+    (-4,4),
+    (4,4)
+]
+
 while not found:
     positions = set()
-    quadrants = {
-        "tl": set(),
-        "tr": set(),
-        "bl": set(),
-        "br": set()
-    }
     for robot in robots:
-        raw_pos = (robot["p"][0]+robot["v"][0]*second, robot["p"][1]+robot["v"][1]*second)
+        raw_pos = (robot["p"][0]+robot["v"][0]*seconds, robot["p"][1]+robot["v"][1]*seconds)
         robot["p"] = (raw_pos[0] % width, raw_pos[1] % height)
         positions.add(robot["p"])
-        x, y = robot["p"]
-        if x < width//2 and y < height//2:
-            quadrants["tl"].add((x, y))
-        elif x > width//2 and y < height//2:
-            quadrants["tr"].add((x, y))
-        elif x < width//2 and y > height//2:
-            quadrants["bl"].add((x, y))
-        elif x > width//2 and y > height//2:
-            quadrants["br"].add((x, y))
     
-    if len(quadrants["tl"]) == len(quadrants["tr"]) and len(quadrants["bl"]) == len(quadrants["br"]):
-        # Check if the right had side of the map is a mirror image of the left
-        symmetrical = True
-        for each in robots:
-            # If for each point (< width//2), there exists another point flipped across width//2 (on the same y) then we have a match
-            if each["p"][0] >= width//2:
-                continue
-            elif each["p"][0] < width//2 and (width-each["p"][0]-1, each["p"][1]) in positions:
-                continue
-            else:
-                symmetrical = False
+    for pos in positions:
+        # Check if the tree shape is present in the positions
+        if pos[0] < 4 or pos[1] > height-4:
+            continue
+        
+        exists = True
+        for tree in tree_shape:
+            if (pos[0]+tree[0], pos[1]+tree[1]) not in positions:
+                exists = False
                 break
-        if symmetrical:
+        
+        if exists:
+            print("Found at ", pos)
+            print("Seconds: ", seconds)
+            output_map(robots, seconds)
             found = True
-            print(second)
-            output_map(robots, second)
-    if second % 1000 == 0:
-        print(second)
-    second += 1
+            break
+
+    seconds += 1
 
 
     
