@@ -89,12 +89,23 @@ print(scores[end])
 
 ## Part 2
 
-# Could binary search here but I'm lazy
-for i in range(len(coords)):
-    bits = i
-    maze = maze_at_sec(bits, coords)
-
+looking = len(coords)//2
+step = looking//2
+found = False
+while not found:
+    maze = maze_at_sec(looking, coords)
     scores = tile_map(maze, start, end)
-    if end not in scores:
-        print(coords[i-1])
-        break
+
+    if end in scores:
+        looking += step
+        step = step//2
+    else:
+        maze = maze_at_sec(looking-1, coords)
+        scores = tile_map(maze, start, end)
+        if end in scores:
+            found = True
+        else:
+            looking -= step
+            step = step//2
+
+print(looking)
