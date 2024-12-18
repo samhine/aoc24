@@ -1,5 +1,4 @@
 from collections import defaultdict
-from astar import a_star_search
 
 with open("input.txt", "r") as file:
     input = file.read().splitlines()
@@ -15,9 +14,9 @@ def maze_at_sec(sec, coords):
         row = []
         for x in range(width):
             if (x,y) in relevant_coords:
-                row.append(0)
+                row.append('#')
             else:
-                row.append(1)
+                row.append('.')
         maze.append(row)
     
     return maze
@@ -39,6 +38,44 @@ def print_path(maze, path):
                 prow += "."
         print(prow)
 
+dirs = {
+    "N": (0, -1),
+    "E": (1, 0),
+    "S": (0, 1),
+    "W": (-1, 0)
+}
+
+def populate_neighbours(maze, position, scores):
+    my_score = scores[position]
+    x, y = position
+    updated = []
+    for direction in dirs:
+        dx, dy = dirs[direction]
+        new_pos = (x+dx, y+dy)
+        if new_pos[0] < 0 or new_pos[0] >= width or new_pos[1] < 0 or new_pos[1] >= height:
+            continue
+
+        if maze[y+dy][x+dx] == ".":
+            score = my_score + 1
+            if new_pos not in scores or scores[(x+dx, y+dy)] > score:
+                scores[(x+dx, y+dy)] = score
+                updated.append((x+dx, y+dy))
+    return maze, updated, scores
+
+def tile_map(maze, start, end):
+    recently_updated = [start]
+    scores = defaultdict(int)
+
+    while len(recently_updated) > 0:
+        updated = []
+        for position in recently_updated:
+            maze, new, scores = populate_neighbours(maze, position, scores)
+            updated.extend(new)
+        
+        recently_updated = updated
+    
+    return scores
+
 width = 71
 height = 71
 
@@ -47,8 +84,8 @@ end = (width-1, height-1)
 
 ## Part 1
 maze = maze_at_sec(1024, coords)
-path, path_length = a_star_search(maze, start, end)
-print(path_length-1) # Don't count 0th step
+scores = tile_map(maze, start, end)
+print(scores[end])
 
 ## Part 2
 
@@ -57,7 +94,7 @@ for i in range(len(coords)):
     bits = i
     maze = maze_at_sec(bits, coords)
 
-    path, path_length = a_star_search(maze, start, end)
-    if not path:
+    scores = tile_map(maze, start, end)
+    if end not in scores:
         print(coords[i-1])
         break
