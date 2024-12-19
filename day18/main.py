@@ -21,23 +21,6 @@ def maze_at_sec(sec, coords):
     
     return maze
 
-def print_maze(maze):
-    for row in maze:
-        p = ["." if c==0 else "#" for c in row]
-        print("".join(p))
-
-def print_path(maze, path):
-    for rc, row in enumerate(maze):
-        prow = ""
-        for cc, col in enumerate(row):
-            if (cc, rc) in path:
-                prow += "O"
-            elif col == 1:
-                prow += "#"
-            else:
-                prow += "."
-        print(prow)
-
 dirs = {
     "N": (0, -1),
     "E": (1, 0),
@@ -88,7 +71,6 @@ scores = tile_map(maze, start, end)
 print(scores[end])
 
 ## Part 2
-
 looking = len(coords)//2
 step = looking//2
 found = False
